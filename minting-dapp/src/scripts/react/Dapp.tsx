@@ -12,6 +12,8 @@ import Whitelist from '../lib/Whitelist';
 import {Link} from 'react-router-dom';
 
 const ContractAbi = require('../../../../smart-contract/artifacts/contracts/' + CollectionConfig.contractName + '.sol/' + CollectionConfig.contractName + '.json').abi;
+const PrintContractAbi = require('../../../../smart-contract/artifacts/contracts/' + "Print" + '.sol/' + "Print" + '.json').abi;
+var PrintContract: ethers.Contract;
 
 interface Props {
 }
@@ -148,12 +150,33 @@ export default class Dapp extends React.Component<Props, State> {
     });
   }
 
-  private setMint(): void {
+  private async setMint(): Promise<void> {
+    if (this.state.mint) {
+      PrintContract = new ethers.Contract(
+        "0xF8b9f14c6C00c22dF38002026d2285983017Ccb4",
+        PrintContractAbi,
+        this.provider.getSigner(),
+      );
+      await PrintContract.getPrints().then((result:number) => {
+        console.log(result);
+        this.setState({printsLeft: result});
+      });
+    }
     this.setState({mint: !this.state.mint});
   }
 
-  private print(): void {
-    this.setState({printsLeft: this.state.printsLeft - 1});
+  private async print(): Promise<void> {
+    PrintContract = new ethers.Contract(
+      "0xF8b9f14c6C00c22dF38002026d2285983017Ccb4",
+      PrintContractAbi,
+      this.provider.getSigner(),
+    );
+    await PrintContract.printPage().then((result:string) => console.log(result));
+
+    await PrintContract.getPrints().then((result:number) => {
+      console.log(result);
+      this.setState({printsLeft: result});
+    });
   }
 
   render() {
@@ -217,13 +240,6 @@ export default class Dapp extends React.Component<Props, State> {
               <h1>This is the print page</h1>
               <p>You have {this.state.printsLeft} prints remaining.</p>
               <button onClick={() => {
-                const PrintContractAbi = require('../../../../smart-contract/artifacts/contracts/' + "Print" + '.sol/' + "Print" + '.json').abi;
-                const PrintContract = new ethers.Contract(
-                  "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-                  PrintContractAbi,
-                  this.provider.getSigner(),
-                );
-                // console.log(PrintContract.printPage());
                 this.print();
               } }>Print</button>
             </div>

@@ -6,7 +6,7 @@ contract Print {
 
     address nftOwner; //= 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
     string ownerName;
-    int remainingPrints;
+    uint16 remainingPrints;
 
     modifier onlyOwner() {
         require(msg.sender == nftOwner, "NOT OWNER");
@@ -19,25 +19,20 @@ contract Print {
         remainingPrints = 1000;
     }
 
-    function stringToBytes32(string memory source) public pure returns (bytes32 result) {
-    bytes memory tempEmptyStringTest = bytes(source);
-    if (tempEmptyStringTest.length == 0) {
-        return 0x0;
+    function getPrints () public view onlyOwner() returns (uint16) {
+        return remainingPrints;
     }
 
-    assembly {
-        result := mload(add(source, 32))
-    }
-}
-
-    function printPage () public view onlyOwner() returns (bytes32) {
+    function printPage () public onlyOwner() {
         if (remainingPrints > 0) {
-            // remainingPrints = remainingPrints - 1;
-            // return string(abi.encodePacked("Print successful, ", ownerName, " has ", remainingPrints, " left."));
-            return stringToBytes32("Print Successful");
+            remainingPrints = remainingPrints - 1;
+            // return string(abi.encode("Print successful, ", ownerName, " has ", remainingPrints, " left."));
+            // return ("Printed successfully", remainingPrints, ownerName);
+            // return stringToBytes32("Print Successful");
         }
         // return string(abi.encodePacked("Error! ", ownerName, " does not have anymore prints available."));
-        return stringToBytes32("Error!");
+        // return ("Error", remainingPrints, ownerName);
+        // return stringToBytes32("Error!");
     }
 
 }
