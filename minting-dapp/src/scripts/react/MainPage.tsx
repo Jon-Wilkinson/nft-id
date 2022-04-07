@@ -1,3 +1,4 @@
+import '../../styles/main.scss';
 import Dapp from '.././react/Dapp';
 import {Link} from 'react-router-dom';
 
@@ -18,7 +19,7 @@ export default function MainPage() {
       
       </main>
       <hr/>
-      <Link to='expage'>Go to Example Page</Link>
+      <Link to='printPage'>Go to Print Page</Link>
   </div>
   );
 }
