@@ -9,6 +9,8 @@ import CollectionStatus from './CollectionStatus';
 import MintWidget from './MintWidget';
 import Whitelist from '../lib/Whitelist';
 
+import {Link} from 'react-router-dom';
+
 const ContractAbi = require('../../../../smart-contract/artifacts/contracts/' + CollectionConfig.contractName + '.sol/' + CollectionConfig.contractName + '.json').abi;
 
 interface Props {
@@ -28,6 +30,8 @@ interface State {
   merkleProofManualAddress: string;
   merkleProofManualAddressFeedbackMessage: string|JSX.Element|null;
   errorMessage: string|JSX.Element|null,
+  mint: boolean,
+  printsLeft: number,
 }
 
 const defaultState: State = {
@@ -44,6 +48,8 @@ const defaultState: State = {
   merkleProofManualAddress: '',
   merkleProofManualAddressFeedbackMessage: null,
   errorMessage: null,
+  mint: true,
+  printsLeft: 1000,
 };
 
 export default class Dapp extends React.Component<Props, State> {
@@ -142,6 +148,14 @@ export default class Dapp extends React.Component<Props, State> {
     });
   }
 
+  private setMint(): void {
+    this.setState({mint: !this.state.mint});
+  }
+
+  private print(): void {
+    this.setState({printsLeft: this.state.printsLeft - 1});
+  }
+
   render() {
     return (
       <>
@@ -154,9 +168,12 @@ export default class Dapp extends React.Component<Props, State> {
 
         {this.state.errorMessage ? <div className="error"><p>{this.state.errorMessage}</p><button onClick={() => this.setError()}>Close</button></div> : null}
         
+        
+        
         {this.isWalletConnected() ?
           <>
-            {this.isContractReady() ?
+          <button onClick={() => {this.setMint();}}>{this.state.mint? "Go to print" : "Go to mint"}</button>
+            {this.state.mint ? this.isContractReady() ?
               <>
                 <CollectionStatus
                   userAddress={this.state.userAddress}
@@ -195,6 +212,21 @@ export default class Dapp extends React.Component<Props, State> {
 
                 Loading collection data...
               </div>
+              :
+              <div>
+              <h1>This is the print page</h1>
+              <p>You have {this.state.printsLeft} prints remaining.</p>
+              <button onClick={() => {
+                const PrintContractAbi = require('../../../../smart-contract/artifacts/contracts/' + "Print" + '.sol/' + "Print" + '.json').abi;
+                const PrintContract = new ethers.Contract(
+                  "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+                  PrintContractAbi,
+                  this.provider.getSigner(),
+                );
+                // console.log(PrintContract.printPage());
+                this.print();
+              } }>Print</button>
+            </div>
             }
           </>
         : null}
