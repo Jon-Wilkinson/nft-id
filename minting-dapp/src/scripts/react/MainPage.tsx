@@ -19,7 +19,9 @@ export default function MainPage() {
       
       </main>
       <hr/>
-      <Link to='printPage'>Go to Print Page</Link>
+      <footer>
+        <p> By Raymond Eleko, Josh  Spurgeon, Sydney Evans, Jon Wilkinson, Daniel Wellons </p>
+      </footer>
   </div>
   );
 }
