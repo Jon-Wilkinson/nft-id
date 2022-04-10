@@ -43,7 +43,7 @@ function Login() {
   <div className="App">
     <header className="App-header">
       <label>
-        This is the login page!
+        Log in here
       </label>
       <form>
         <label>

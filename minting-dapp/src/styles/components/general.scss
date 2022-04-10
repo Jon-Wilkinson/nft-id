@@ -28,6 +28,29 @@ main {
   @apply m-auto;
   @apply w-full;
   @apply max-w-md;
+  position: absolute;
+  top: 40%;
+  bottom: 40%
+}
+
+#left {
+  float: left;
+  width: 20%;
+}
+#right {
+  position: absolute;
+  left: 30%;
+  right: 30%;
+  top: 10%;
+  // float: right;
+  // width: 80%;
+}
+
+footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
 }
 
 span.emoji {
