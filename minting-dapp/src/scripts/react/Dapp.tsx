@@ -175,7 +175,7 @@ export default class Dapp extends React.Component<Props, State> {
 
     await PrintContract.getPrints().then((result:number) => {
       console.log(result);
-      this.setState({printsLeft: result});
+      this.setState({printsLeft: result-1});
     });
   }
 
